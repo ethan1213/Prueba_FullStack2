@@ -1,10 +1,12 @@
 # Proyectos Web
 
-Primer avance: página de inicio de una tienda de proyectos web para Desarrollo Fullstack II.
+Avances: página de inicio e inicio de sesión de una tienda de proyectos web para Desarrollo Fullstack II.
 
 ## Incluye
 
-- Encabezado y navegación dentro del inicio.
+- Encabezado y navegación entre inicio y login.
+- Formulario de inicio de sesión con validación de correo y contraseña.
+- Mensajes de error junto a los campos, sin envío de datos ni sesión real.
 - Tres proyectos de ejemplo con descripción y precio.
 - Pie de página.
 - Diseño sencillo adaptable a celular, con Bulma y CSS propio.
@@ -13,6 +15,6 @@ Para verlo, abrir `index.html` desde la carpeta principal. Bulma está descargad
 
 ## Siguientes avances
 
-Revisar e incorporar las páginas de registro e inicio de sesión, sus enlaces y las validaciones JavaScript. Las imágenes, el logo y el video los agregará el equipo. Esta primera versión no completa todavía toda la rúbrica.
+Revisar e incorporar la página de registro, sus enlaces y sus validaciones JavaScript. Las imágenes, el logo y el video los agregará el equipo. Esta versión no completa todavía toda la rúbrica.
 
 El sitio es solo frontend y no realiza compras reales.

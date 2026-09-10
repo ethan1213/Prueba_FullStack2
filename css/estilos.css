@@ -1,7 +1,7 @@
-/* Bulma local: botones y tarjetas. */
+/* Bulma local: botones, tarjetas y formularios. */
 @import url("vendor/bulma.min.css");
 
-/* Estilos de la página de inicio. */
+/* Estilos propios compartidos por las tres páginas. */
 body {
   font-family: Arial, sans-serif;
   color: #333;
@@ -24,7 +24,15 @@ p { margin-bottom: 16px; }
 .proyectos { margin-bottom: 35px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .proyectos .tarjeta { margin-bottom: 0; border: 1px solid #d9dee7; border-radius: 4px; box-shadow: none; }
 .precio { font-size: 20px; font-weight: bold; }
+.panel-formulario { max-width: 510px; margin: 30px auto; padding: 20px; border: 1px solid #ddd; border-radius: 4px; box-shadow: none; }
+.panel-formulario h1 { font-size: 28px; }
+.notification.aviso { padding: 10px; background: #f5f5f5; color: #444; border-radius: 0; font-size: 14px; }
 .button, .input { border-radius: 3px; box-shadow: none; }
+.field { margin: 20px 0; }
+.ayuda { display: block; font-size: 14px; color: #536074; margin-top: 5px; }
+.error { color: #b42318; font-size: 14px; margin: 4px 0 0; }
+.input[aria-invalid="true"] { border-color: #b42318; }
+.resultado { color: #24603a; font-weight: bold; margin-top: 16px; }
 footer { border-top: 1px solid #d9dee7; font-size: 14px; }
 footer p { margin-bottom: 5px; }
 a:focus-visible, button:focus-visible, input:focus-visible {
@@ -39,4 +47,5 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   .proyectos { grid-template-columns: 1fr; }
   h1 { font-size: 26px; }
   .bienvenida { padding: 30px 0; }
+  .panel-formulario { padding: 20px; margin: 25px auto; }
 }

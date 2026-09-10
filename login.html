@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión | Proyectos Web</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script src="js/validaciones.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="contenedor cabecera">
+      <a class="marca" href="index.html">Proyectos Web</a>
+      <nav aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="login.html" aria-current="page">Iniciar sesión</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="box panel-formulario" aria-labelledby="titulo-login">
+      <h1 id="titulo-login">Iniciar sesión</h1>
+      <p>Ingresa tu correo y contraseña.</p>
+      <p class="notification is-info is-light aviso">Formulario de demostración. No se inicia una sesión real ni se guardan datos.</p>
+      <form id="form-login" novalidate>
+        <div class="field">
+          <label class="label" for="correo">Correo electrónico</label>
+          <input class="input" type="email" id="correo" name="correo" autocomplete="email" required aria-describedby="ayuda-correo error-correo">
+          <small id="ayuda-correo" class="ayuda">Ejemplo: nombre@correo.cl</small>
+          <p id="error-correo" class="error" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="clave">Contraseña</label>
+          <input class="input" type="password" id="clave" name="clave" autocomplete="current-password" required aria-describedby="ayuda-clave error-clave">
+          <small id="ayuda-clave" class="ayuda">Ingresa una contraseña para probar el formulario.</small>
+          <p id="error-clave" class="error" aria-live="polite"></p>
+        </div>
+        <button class="button is-link" type="submit">Iniciar sesión</button>
+        <p id="resultado" class="resultado" role="status"></p>
+      </form>
+      <noscript><p>Activa JavaScript para validar este formulario. No envíes datos reales.</p></noscript>
+    </section>
+  </main>
+
+  <footer>
+    <div class="contenedor">
+      <p><strong>Proyectos Web</strong></p>
+      <p>Desarrollo Fullstack II · Sitio de práctica, sin compras reales.</p>
+    </div>
+  </footer>
+</body>
+</html>
