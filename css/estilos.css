@@ -14,6 +14,7 @@ header { border-bottom: 1px solid #ddd; box-shadow: 0 1px 3px rgba(20, 30, 50, 0
 .cabecera, nav, .marca { display: flex; align-items: center; gap: 20px; }
 .cabecera { justify-content: space-between; }
 .marca { gap: 10px; font-size: 20px; font-weight: bold; color: #2452c9; }
+.marca-logo { height: 44px; width: auto; display: block; }
 nav a { padding: 6px 12px; border-radius: 20px; transition: background 0.15s ease, color 0.15s ease; }
 nav a[aria-current="page"] { background: #eef2fd; color: #2452c9; font-weight: bold; text-decoration: none; }
 nav a:hover { background: #f3f5f9; text-decoration: none; }
@@ -65,6 +66,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   .cabecera { flex-direction: column; align-items: flex-start; gap: 14px; }
   nav { flex-wrap: wrap; gap: 14px; }
   .proyectos { grid-template-columns: 1fr; }
+  .marca-logo { height: 36px; }
   h1 { font-size: 26px; }
   .bienvenida { padding: 32px 24px; margin: 20px 0 30px; }
   .bienvenida h1 { font-size: 28px; }
