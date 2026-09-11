@@ -1,5 +1,6 @@
 const formulario = document.querySelector('form');
 const resultado = document.getElementById('resultado');
+const esRegistro = formulario.id === 'form-registro';
 
 // Cada mensaje aparece debajo del campo correspondiente.
 function mostrarError(id, mensaje) {
@@ -27,7 +28,25 @@ formulario.addEventListener('submit', function (evento) {
 
   if (clave.value.trim() === '') {
     mostrarError('clave', 'Ingresa una contraseña.');
+  } else if (esRegistro && clave.value.length < 8) {
+    mostrarError('clave', 'La contraseña debe tener al menos ocho caracteres.');
+  }
 
+  if (esRegistro) {
+    const nombre = document.getElementById('nombre');
+    const confirmar = document.getElementById('confirmar');
+    mostrarError('nombre', '');
+    mostrarError('confirmar', '');
+
+    if (nombre.value.trim().length < 2) {
+      mostrarError('nombre', 'Ingresa un nombre de al menos dos caracteres.');
+    }
+
+    if (confirmar.value === '') {
+      mostrarError('confirmar', 'Repite tu contraseña.');
+    } else if (confirmar.value !== clave.value) {
+      mostrarError('confirmar', 'Las contraseñas no coinciden.');
+    }
   }
 
   const primerError = formulario.querySelector('[aria-invalid="true"]');
@@ -36,7 +55,9 @@ formulario.addEventListener('submit', function (evento) {
     return;
   }
 
-  resultado.textContent = 'Datos válidos. En esta demostración no se inicia una sesión real.';
+  resultado.textContent = esRegistro
+    ? 'Datos válidos. En esta demostración no se crea una cuenta.'
+    : 'Datos válidos. En esta demostración no se inicia una sesión real.';
 });
 
 // Al cambiar los datos, quitamos el resultado del envío anterior.
