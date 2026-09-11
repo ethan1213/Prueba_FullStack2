@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro | EyJ Proyectos Web</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="stylesheet" href="css/estilos.css">
+  <script src="js/validaciones.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="contenedor cabecera">
+      <a class="marca" href="index.html">
+        <img src="img/logo-header.png" alt="EyJ Proyectos Web" class="marca-logo">
+      </a>
+      <nav aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="login.html">Iniciar sesión</a>
+        <a href="register.html" aria-current="page">Registrarse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="box panel-formulario" aria-labelledby="titulo-registro">
+      <h1 id="titulo-registro">Registro</h1>
+      <p>Completa tus datos para crear una cuenta.</p>
+      <p class="notification is-info is-light aviso">Formulario de demostración. No se crean cuentas ni se guardan datos reales.</p>
+      <form id="form-registro" novalidate>
+        <div class="field">
+          <label class="label" for="nombre">Nombre completo</label>
+          <input class="input" type="text" id="nombre" name="nombre" autocomplete="name" minlength="2" required aria-describedby="ayuda-nombre error-nombre">
+          <small id="ayuda-nombre" class="ayuda">Escribe al menos dos caracteres.</small>
+          <p id="error-nombre" class="error" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="correo">Correo electrónico</label>
+          <input class="input" type="email" id="correo" name="correo" autocomplete="email" required aria-describedby="ayuda-correo error-correo">
+          <small id="ayuda-correo" class="ayuda">Ejemplo: nombre@correo.cl</small>
+          <p id="error-correo" class="error" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="clave">Contraseña</label>
+          <input class="input" type="password" id="clave" name="clave" autocomplete="new-password" minlength="8" required aria-describedby="ayuda-clave error-clave">
+          <small id="ayuda-clave" class="ayuda">Usa al menos ocho caracteres.</small>
+          <p id="error-clave" class="error" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="confirmar">Confirmar contraseña</label>
+          <input class="input" type="password" id="confirmar" name="confirmar" autocomplete="new-password" required aria-describedby="ayuda-confirmar error-confirmar">
+          <small id="ayuda-confirmar" class="ayuda">Repite la misma contraseña.</small>
+          <p id="error-confirmar" class="error" aria-live="polite"></p>
+        </div>
+        <button class="button is-link" type="submit">Registrarse</button>
+        <p id="resultado" class="resultado" role="status"></p>
+      </form>
+      <noscript><p>Activa JavaScript para validar este formulario. No envíes datos reales.</p></noscript>
+      <p style="margin-top: 15px;">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="contenedor">
+      <p><strong>EyJ Proyectos Web</strong></p>
+      <p>Desarrollo Fullstack II · Sitio de práctica, sin compras reales.</p>
+    </div>
+  </footer>
+</body>
+</html>
