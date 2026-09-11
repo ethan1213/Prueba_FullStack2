@@ -13,8 +13,10 @@ header, footer { background: white; padding: 20px 0; }
 header { border-bottom: 1px solid #ddd; box-shadow: 0 1px 3px rgba(20, 30, 50, 0.05); }
 .cabecera, nav, .marca { display: flex; align-items: center; gap: 20px; }
 .cabecera { justify-content: space-between; }
-.marca { gap: 10px; font-size: 20px; font-weight: bold; }
-nav a[aria-current="page"], nav a:hover { text-decoration: underline; }
+.marca { gap: 10px; font-size: 20px; font-weight: bold; color: #2452c9; }
+nav a { padding: 6px 12px; border-radius: 20px; transition: background 0.15s ease, color 0.15s ease; }
+nav a[aria-current="page"] { background: #eef2fd; color: #2452c9; font-weight: bold; text-decoration: none; }
+nav a:hover { background: #f3f5f9; text-decoration: none; }
 h1, h2, h3 { font-weight: bold; line-height: 1.25; margin-bottom: 16px; }
 h1 { font-size: 28px; }
 h2 { font-size: 24px; }
