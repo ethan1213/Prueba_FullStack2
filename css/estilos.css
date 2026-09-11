@@ -34,6 +34,11 @@ p { margin-bottom: 16px; }
 .bienvenida p { font-size: 17px; color: #4a5568; max-width: 560px; }
 .bienvenida .button { margin-top: 6px; transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .bienvenida .button:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(36, 82, 201, 0.25); }
+.beneficios { margin-bottom: 40px; }
+.grid-beneficios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.beneficio { padding: 22px; border-radius: 6px; background: #f8fafc; border-left: 3px solid #2452c9; }
+.beneficio h3 { font-size: 17px; margin-bottom: 8px; }
+.beneficio p { font-size: 15px; color: #536074; margin-bottom: 0; }
 .proyectos { margin-bottom: 35px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .proyectos .tarjeta {
   margin-bottom: 0;
@@ -69,6 +74,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   .cabecera { flex-direction: column; align-items: flex-start; gap: 14px; }
   nav { flex-wrap: wrap; gap: 14px; }
   .proyectos { grid-template-columns: 1fr; }
+  .grid-beneficios { grid-template-columns: 1fr; }
   .marca-logo { height: 36px; }
   h1 { font-size: 26px; }
   .bienvenida { padding: 32px 24px; margin: 20px 0 30px; }
