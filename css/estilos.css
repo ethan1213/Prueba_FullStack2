@@ -36,6 +36,8 @@ p { margin-bottom: 16px; }
 .bienvenida p { font-size: 17px; color: #4a5568; max-width: 560px; }
 .bienvenida .button { margin-top: 6px; transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .bienvenida .button:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(36, 82, 201, 0.25); }
+.video-presentacion { margin-bottom: 45px; text-align: center; }
+.video-presentacion video { width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 16px rgba(20, 30, 50, 0.12); }
 .beneficios { margin-bottom: 40px; }
 .grid-beneficios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .beneficio { padding: 22px; border-radius: 6px; background: #f8fafc; border-left: 3px solid #2452c9; }
