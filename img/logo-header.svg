@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="52" viewBox="0 0 220 52" role="img" aria-label="E&amp;J Proyectos Web">
+  <g fill="none" stroke="#00aeef" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 13 5 25 17 37M43 13 55 25 43 37M36 5 24 45"/>
+  </g>
+  <g fill="#1b2b52" font-family="Arial, sans-serif">
+    <text x="69" y="31" font-size="32" font-weight="700">E&amp;J</text>
+    <text x="70" y="48" font-size="14">Proyectos Web</text>
+  </g>
+</svg>
