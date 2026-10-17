@@ -19,6 +19,11 @@ docker run -d --name syncpass-api --network syncpass --network-alias api --resta
 cat > /opt/syncpass/Caddyfile <<EOF
 $API_DOMAIN {
   encode gzip
+  @preflight {
+    method OPTIONS
+    path /api/*
+  }
+  respond @preflight "" 204
   @api path /api/* /actuator/health
   handle @api {
     reverse_proxy api:8080
