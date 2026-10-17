@@ -4,15 +4,18 @@ exec > >(tee -a /var/log/syncpass-bootstrap.log) 2>&1
 
 dnf install -y docker git
 systemctl enable --now docker
-fallocate -l 1G /swapfile
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-echo '/swapfile none swap sw 0 0' >> /etc/fstab
+if [ ! -f /swapfile ]; then
+  fallocate -l 1G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
 
 mkdir -p /opt/syncpass
-git clone --depth 1 --branch syncpass-api-ec2 https://github.com/ethan1213/Prueba_FullStack2.git /opt/syncpass/source
-test "$(git -C /opt/syncpass/source rev-parse HEAD)" = "8b85b6738fd130f8f080687271f07dfebc0245fc"
+if [ ! -d /opt/syncpass/source/.git ]; then
+  git clone --depth 1 --branch syncpass-api-ec2 https://github.com/ethan1213/Prueba_FullStack2.git /opt/syncpass/source
+fi
 cp -a /opt/syncpass/source/backend /opt/syncpass/backend
 
 TOKEN=$(curl -fsS -X PUT -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600' http://169.254.169.254/latest/api/token)
