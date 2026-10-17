@@ -23,13 +23,15 @@ $API_DOMAIN {
     method OPTIONS
     path /api/*
   }
-  respond @preflight "" 204
   @api path /api/* /actuator/health
-  handle @api {
-    reverse_proxy api:8080
-  }
-  handle {
-    respond "Not found" 404
+  route {
+    respond @preflight "" 204
+    handle @api {
+      reverse_proxy api:8080
+    }
+    handle {
+      respond "Not found" 404
+    }
   }
   header X-Content-Type-Options nosniff
 }
@@ -40,6 +42,7 @@ $WEB_DOMAIN {
 }
 EOF
 
+docker exec syncpass-caddy caddy validate --config /etc/caddy/Caddyfile
 docker restart syncpass-caddy
 echo "SYNC_PASS_WEB=https://$WEB_DOMAIN/"
 echo "SYNC_PASS_API_GATEWAY=https://hluamat8vg.execute-api.us-east-1.amazonaws.com"
