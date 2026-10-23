@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import ScannerPage from './pages/ScannerPage';
 import SyncPage from './pages/SyncPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import TallerDetailPage from './pages/TallerDetailPage';
 import PanelQuorumPage from './pages/PanelQuorumPage';
 import LegacyEyjModule from './pages/legacy/LegacyEyjModule';
@@ -64,7 +65,7 @@ export default function App(){
  <Route path="/borradores">{protect(<DraftsPage talleres={talleres} onQueue={queue}/>)}</Route>
  <Route path="/sincronizacion">{protect(<SyncPage unsyncedItems={unsyncedItems} isOfflineMode={isOfflineMode} onPerformSync={sync}/>)}</Route>
  <Route path="/panel">{protect(<PanelQuorumPage talleres={talleres}/>,staff)}</Route>
- <Route path="/login"><LoginPage/></Route><Route path="/registro"><LoginPage/></Route><Route path="/auth/callback"><LoginPage/></Route>
+ <Route path="/login"><LoginPage/></Route><Route path="/registro"><RegisterPage/></Route><Route path="/auth/callback"><LoginPage/></Route>
  <Route path="/ep1" component={LegacyEyjModule}/>
  <Route><div className="contenedor estado-bloque"><h1>Página no encontrada</h1><Link href="/">Volver al inicio</Link></div></Route>
  </Switch>}</div><Footer/></div>;

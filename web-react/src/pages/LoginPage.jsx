@@ -10,6 +10,7 @@ export default function LoginPage(){
  <p className="subtitulo">Inicia sesión o crea tu cuenta mediante Amazon Cognito.</p>
  {error && <p className="alert alert-warning" role="alert">{error.message}</p>}
  {!configured && <p className="alert alert-warning">El acceso aún requiere configurar el grupo de usuarios de Cognito.</p>}
- {isLoading?<p>Verificando sesión…</p>:isAuthenticated?<><p role="status">Sesión iniciada correctamente con Amazon Cognito.</p><p>Correo: <strong>{user?.email || 'No disponible'}</strong></p><p>Perfil: {roles.map(roleLabel).join(' · ') || 'Pendiente de asignación'}</p><Link href="/mi-panel" className="btn btn-primary">Ir a mi panel</Link><button className="btn btn-secondary" onClick={logout}>Cerrar sesión</button></>:<button className="btn btn-primary btn-block" disabled={!configured} onClick={loginWithRedirect}>Continuar con Cognito</button>}
+ {isLoading?<p>Verificando sesión…</p>:isAuthenticated?<><p role="status">Sesión iniciada correctamente con Amazon Cognito.</p><p>Correo: <strong>{user?.email || 'No disponible'}</strong></p><p>Perfil: {roles.map(roleLabel).join(' · ') || 'Pendiente de asignación'}</p><Link href="/mi-panel" className="btn btn-primary">Ir a mi panel</Link><button className="btn btn-secondary" onClick={logout}>Cerrar sesión</button></>:<><button className="btn btn-primary btn-block" disabled={!configured} onClick={loginWithRedirect}>Continuar con Cognito</button>
+ <p className="subtitulo">¿No tienes cuenta? <Link href="/registro">Crea una con Cognito</Link>.</p></>}
  </div></div>;
 }
