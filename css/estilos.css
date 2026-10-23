@@ -86,3 +86,47 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   .bienvenida h1 { font-size: 28px; }
   .panel-formulario { padding: 20px; margin: 25px auto; }
 }
+
+/* Adaptacion para tablet (vertical y horizontal). */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .contenedor { width: 94%; }
+  .proyectos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-beneficios { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* El tercer beneficio ocupa el ancho completo para no dejar un hueco. */
+  .grid-beneficios .beneficio:nth-child(3):last-child { grid-column: 1 / -1; }
+  .banner-home img { max-height: 320px; }
+  .bienvenida { padding: 44px 32px; }
+  .bienvenida h1 { font-size: 31px; }
+  nav { flex-wrap: wrap; gap: 10px; }
+}
+
+/* Telefono angosto: el minimo que exige la pauta es 360 px sin desborde. */
+@media (max-width: 380px) {
+  .contenedor { width: 100%; padding: 0 16px; }
+  .marca { font-size: 18px; }
+  nav { gap: 8px; }
+  nav a { padding: 6px 10px; }
+  h1 { font-size: 23px; }
+  .bienvenida { padding: 26px 18px; }
+  .bienvenida h1 { font-size: 25px; }
+  .bienvenida p { font-size: 16px; }
+  .proyectos .tarjeta .card-image img { height: 150px; }
+}
+
+/* Areas tactiles minimas en pantallas touch (48x48). */
+@media (pointer: coarse) {
+  nav a, .button { min-height: 48px; display: inline-flex; align-items: center; }
+}
+
+/* Respeto por quienes reducen el movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .proyectos .tarjeta:hover { transform: none; }
+  .bienvenida .button:hover { transform: none; }
+}
+
+/* Evitar desborde horizontal por imagenes o tablas anchas. */
+img, video { max-width: 100%; }

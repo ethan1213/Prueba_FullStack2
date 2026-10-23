@@ -13,6 +13,7 @@ import LegacyEyjModule from './pages/legacy/LegacyEyjModule';
 import TalleresAdminPage from './pages/TalleresAdminPage';
 import DraftsPage from './pages/DraftsPage';
 import RoleDashboard from './pages/RoleDashboard';
+import MyQrPage from './pages/MyQrPage';
 import {ROLES} from './config/auth';
 import {useSession} from './auth/SessionProvider';
 import {apiGetEventos,apiSyncBatch} from './clients/api';
@@ -24,7 +25,7 @@ export default function App(){
  const owner=user?.sub;
  const [talleres,setTalleres]=useState([]),[unsyncedItems,setQueue]=useState([]),[error,setError]=useState(''),[isOfflineMode,setOffline]=useState(!navigator.onLine);
  const syncing=useRef(false);
- const normalize=rows=>rows.map(t=>({...t,image:'/img/portafolio.jpg',asistentes:[]}));
+ const normalize=rows=>rows.map(t=>({...t,image:'/img/portafolio.jpg',asistentes:[],inscritos:Number(t.inscritos||0),quorumPct:t.cuposMaximos?Math.min(100,Math.round(Number(t.inscritos||0)/t.cuposMaximos*100)):0}));
  async function refresh(){const rows=await apiGetEventos();setTalleres(normalize(rows));await cacheCatalog(rows);setError('');}
  useEffect(()=>{refresh().catch(async()=>{const rows=await cachedCatalog();if(rows)setTalleres(normalize(rows));setError(rows?'Mostrando el catálogo guardado; no se pudo actualizar.':'La API no está disponible. No se pudieron cargar los talleres.');});},[]);
  useEffect(()=>{setQueue([]);if(owner)listLocal('queue',owner).then(setQueue).catch(e=>setError(e.message));},[owner]);
@@ -56,6 +57,7 @@ export default function App(){
  <Route path="/"><HomePage talleres={talleres} onSelectTaller={t=>navigate('/taller/'+t.id)}/></Route>
  <Route path="/taller/:id">{params=><TallerDetailPage taller={talleres.find(t=>String(t.id)===params.id)}/>}</Route>
  <Route path="/mi-panel">{protect(<RoleDashboard/>)}</Route>
+ <Route path="/mi-qr">{protect(<MyQrPage/>)}</Route>
  <Route path="/talleres">{protect(<TalleresAdminPage talleres={talleres} onRefresh={refresh}/>,[ROLES.admin,ROLES.coordinator])}</Route>
  <Route path="/acreditar">{protect(<ScannerPage talleres={talleres} isOfflineMode={isOfflineMode} onAddAttendance={(tallerId,a)=>queue({id:crypto.randomUUID(),tipo:'asistencia',tallerId,participante:a.participante,timestamp:new Date().toISOString()})}/>,staff)}</Route>
  <Route path="/encuesta">{protect(<DraftsPage talleres={talleres} onQueue={queue}/>)}</Route>

@@ -2,10 +2,21 @@ const formulario = document.querySelector('form');
 const resultado = document.getElementById('resultado');
 const esRegistro = formulario.id === 'form-registro';
 
-// Cada mensaje aparece debajo del campo correspondiente.
+// Cada mensaje aparece debajo del campo correspondiente y resalta el borde en rojo.
 function mostrarError(id, mensaje) {
-  document.getElementById('error-' + id).textContent = mensaje;
-  document.getElementById(id).setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+  const errElem = document.getElementById('error-' + id);
+  const inputElem = document.getElementById(id);
+  if (errElem) {
+    errElem.textContent = mensaje;
+  }
+  if (inputElem) {
+    inputElem.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+    if (mensaje) {
+      inputElem.classList.add('is-danger');
+    } else {
+      inputElem.classList.remove('is-danger');
+    }
+  }
 }
 
 formulario.addEventListener('submit', function (evento) {
@@ -60,7 +71,10 @@ formulario.addEventListener('submit', function (evento) {
     : 'Datos válidos. En esta demostración no se inicia una sesión real.';
 });
 
-// Al cambiar los datos, quitamos el resultado del envío anterior.
-formulario.addEventListener('input', function () {
+// Al cambiar los datos, quitamos el resultado general y el error del campo editado.
+formulario.addEventListener('input', function (evento) {
   resultado.textContent = '';
+  if (evento.target && evento.target.id) {
+    mostrarError(evento.target.id, '');
+  }
 });

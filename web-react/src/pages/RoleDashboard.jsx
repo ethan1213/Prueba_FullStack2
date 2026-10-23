@@ -5,7 +5,7 @@ const views=[
  ['admin','Administración',[['/talleres','Gestionar talleres'],['/panel','Ver quórum'],['/sincronizacion','Revisar sincronización']]],
  ['coordinador','Coordinación de proyectos',[['/talleres','Crear y editar talleres'],['/panel','Revisar asistencia'],['/acreditar','Acreditar asistentes']]],
  ['monitor','Operación en terreno',[['/acreditar','Acreditar por QR'],['/sincronizacion','Sincronizar marcaciones'],['/','Consultar talleres']]],
- ['participante','Mis actividades',[['/','Ver talleres'],['/borradores','Mis encuestas'],['/sincronizacion','Enviar encuestas pendientes']]]
+ ['participante','Mis actividades',[['/mi-qr','Mostrar mi QR'],['/','Ver talleres'],['/borradores','Mis encuestas'],['/sincronizacion','Enviar encuestas pendientes']]]
 ];
 export default function RoleDashboard(){
  const roles=useUserRoles();const view=views.find(([role])=>roles.includes(role));
