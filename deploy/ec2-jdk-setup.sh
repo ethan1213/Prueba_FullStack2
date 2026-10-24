@@ -30,6 +30,10 @@ else
 fi
 
 echo "==> Compilando el JAR"
+# El paquete maven de Amazon Linux arrastra Corretto 17: se fuerza el JDK 21 para compilar y ejecutar.
+export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+alternatives --set java "$JAVA_HOME/bin/java" || true
+"$JAVA_HOME/bin/java" -version
 mvn -B -q -f "$APP/source/backend/pom.xml" -DskipTests package
 install -m 644 "$APP/source/backend/target/syncpass-api-1.0.0.jar" "$APP/syncpass-api.jar"
 
@@ -65,7 +69,7 @@ Wants=network-online.target
 [Service]
 User=syncpass
 EnvironmentFile=$ENV_FILE
-ExecStart=/usr/bin/java -XX:MaxRAMPercentage=65 -jar $APP/syncpass-api.jar
+ExecStart=$JAVA_HOME/bin/java -XX:MaxRAMPercentage=65 -jar $APP/syncpass-api.jar
 Restart=on-failure
 RestartSec=5
 NoNewPrivileges=true
