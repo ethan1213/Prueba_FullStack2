@@ -1366,3 +1366,6 @@ footer strong {
 
 .crud-grid { display:grid;grid-template-columns: minmax(0,1fr) minmax(0,1fr);gap:24px; }
 @media(max-width:760px){.crud-grid{grid-template-columns:1fr}}
+
+.lista-pasos { margin: 0 0 18px; padding-left: 20px; color: #444; line-height: 1.6; }
+.lista-pasos li { margin-bottom: 6px; }
