@@ -64,6 +64,8 @@ if [ ! -f "$ENV_FILE" ]; then
 fi
 grep -q '^SERVER_ADDRESS=' "$ENV_FILE" || echo 'SERVER_ADDRESS=127.0.0.1' >> "$ENV_FILE"
 grep -q '^AWS_REGION=' "$ENV_FILE" || echo 'AWS_REGION=us-east-1' >> "$ENV_FILE"
+CORS_REQUIRED="http://localhost:3000,https://web-react-nu-nine.vercel.app"
+grep -q '^CORS_ORIGINS=.*web-react-nu-nine.vercel.app' "$ENV_FILE" || { sed -i '/^CORS_ORIGINS=/d' "$ENV_FILE"; echo "CORS_ORIGINS=$CORS_REQUIRED" >> "$ENV_FILE"; }
 chown root:syncpass "$ENV_FILE" && chmod 640 "$ENV_FILE"
 
 echo "==> Servicio systemd syncpass-api"
@@ -108,12 +110,20 @@ mkdir -p /etc/caddy
 cat > /etc/caddy/Caddyfile <<EOF
 $API_DOMAIN {
   encode gzip
-  @api path /api/* /actuator/health
-  handle @api {
-    reverse_proxy 127.0.0.1:8080
+  # API Gateway (HTTP API) agrega las cabeceras CORS; el origen solo confirma el preflight.
+  @preflight {
+    method OPTIONS
+    path /api/*
   }
-  handle {
-    respond "Not found" 404
+  @api path /api/* /actuator/health
+  route {
+    respond @preflight "" 204
+    handle @api {
+      reverse_proxy 127.0.0.1:8080
+    }
+    handle {
+      respond "Not found" 404
+    }
   }
   header {
     X-Content-Type-Options nosniff
