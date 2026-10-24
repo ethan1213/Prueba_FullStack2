@@ -1,5 +1,5 @@
 #!/bin/bash
-# Instala JDK 21 (Amazon Corretto) + Maven en EC2, compila el JAR y lo ejecuta como servicio systemd.
+# Instala JDK 21 (Amazon Corretto) + Apache Maven en EC2, compila el JAR y lo ejecuta como servicio systemd.
 # Caddy (nativo) publica la API por HTTPS para que API Gateway la consuma. Idempotente: sirve para
 # la primera instalación y para actualizar. Uso: sudo bash ec2-jdk-setup.sh [rama]
 set -euo pipefail
@@ -8,10 +8,11 @@ REPO=https://github.com/ethan1213/Prueba_FullStack2.git
 APP=/opt/syncpass
 ENV_FILE=/etc/syncpass/syncpass.env
 CADDY_VERSION=2.8.4
+MAVEN_VERSION=3.9.9
 exec > >(tee -a /var/log/syncpass-setup.log) 2>&1
 
-echo "==> Paquetes: JDK 21, Maven, git"
-dnf install -y java-21-amazon-corretto-devel maven git tar
+echo "==> Paquetes: JDK 21 y git"
+dnf install -y java-21-amazon-corretto-devel git tar
 java -version
 
 if [ ! -f /swapfile ]; then
@@ -30,11 +31,17 @@ else
 fi
 
 echo "==> Compilando el JAR"
-# El paquete maven de Amazon Linux arrastra Corretto 17: se fuerza el JDK 21 para compilar y ejecutar.
+# Maven oficial de Apache: el paquete "maven" de Amazon Linux fija Corretto 17 y no compila Java 21.
 export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+export MAVEN_SKIP_RC=1
 alternatives --set java "$JAVA_HOME/bin/java" || true
-"$JAVA_HOME/bin/java" -version
-mvn -B -q -f "$APP/source/backend/pom.xml" -DskipTests package
+if [ ! -x "/opt/maven-$MAVEN_VERSION/bin/mvn" ]; then
+  curl -fsSL "https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" | tar -xz -C /opt
+  mv "/opt/apache-maven-$MAVEN_VERSION" "/opt/maven-$MAVEN_VERSION"
+fi
+MVN="/opt/maven-$MAVEN_VERSION/bin/mvn"
+"$MVN" -v
+"$MVN" -B -q -f "$APP/source/backend/pom.xml" -DskipTests package
 install -m 644 "$APP/source/backend/target/syncpass-api-1.0.0.jar" "$APP/syncpass-api.jar"
 
 echo "==> Usuario y variables de entorno"

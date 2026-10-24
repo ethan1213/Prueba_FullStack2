@@ -34,7 +34,7 @@ sudo bash ec2-jdk-setup.sh main
 
 El script [`deploy/ec2-jdk-setup.sh`](../deploy/ec2-jdk-setup.sh) es idempotente:
 
-1. Instala `java-21-amazon-corretto-devel`, Maven y git.
+1. Instala `java-21-amazon-corretto-devel` (JDK 21), Apache Maven 3.9 y git.
 2. Clona o actualiza el repositorio en `/opt/syncpass/source` y compila
    `syncpass-api-1.0.0.jar`.
 3. Crea `/etc/syncpass/syncpass.env`. Si existía un `.env` de Supabase del despliegue
