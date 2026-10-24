@@ -29,6 +29,7 @@ public class SecurityConfig {
    return http.csrf(c -> c.disable()).cors(c -> {}).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
     .authorizeHttpRequests(a -> a.requestMatchers("/actuator/health").permitAll()
       .requestMatchers(HttpMethod.GET,"/api/eventos","/api/eventos/*").permitAll()
+      .requestMatchers(HttpMethod.POST,"/api/auth/*").permitAll()
       .anyRequest().authenticated())
     .oauth2ResourceServer(o -> o.jwt(j -> j.jwtAuthenticationConverter(converter))).build();
  }

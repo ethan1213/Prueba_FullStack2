@@ -67,7 +67,9 @@ Las vistas son exactamente las seis que pide el caso. No hay pantallas inventada
 | Documento | Contenido |
 | --- | --- |
 | [`ARQUITECTURA_FULLSTACK_MOBILE.md`](ARQUITECTURA_FULLSTACK_MOBILE.md) | Arquitectura de sistemas, contrato de la API REST y MVVM en Android |
-| [`AUTH0.md`](AUTH0.md) | Guía paso a paso de autenticación y roles con Auth0, y su relación con el modo offline |
+| [`COGNITO.md`](COGNITO.md) | Registro y login a través de la API, endpoints, errores y buenas prácticas |
+| [`DEMO_EC2_JAR_POSTMAN.md`](DEMO_EC2_JAR_POSTMAN.md) | Despliegue del JAR en EC2 con JDK, Vercel y demostración con Postman |
+| [`AUTH0.md`](AUTH0.md) | *Histórico:* integración anterior con Auth0, ya reemplazada por Cognito |
 | [`../mobile-kotlin/README.md`](../mobile-kotlin/README.md) | Cómo abrir el proyecto Android, layouts adaptativos y permisos |
 
 ---
@@ -98,8 +100,12 @@ css/estilos.css             Hoja de estilos del sitio EP1 (importa Bulma local)
 css/vendor/bulma.min.css    Bulma 1.0.4 local (licencia MIT en docs/licencias/)
 js/validaciones.js          Validaciones de los formularios del sitio EP1
 
+backend/                    API Spring Boot (Java 21): talleres, sync y autenticación con Cognito
+deploy/ec2-jdk-setup.sh     Instala JDK 21 en EC2, compila el JAR y lo deja como servicio
+
 web-react/                  Aplicación web del caso SyncPass (React + Vite + Vercel)
-  src/config/auth.js        Config centralizada: Auth0, audience, claim, API
+  src/config/auth.js        URL de la API, claim y nombres de roles
+  src/auth/SessionProvider  Sesión: login, registro y renovación vía la API
   src/clients/api.js        Cliente de la API REST, incluido el batch sync
   src/hooks/useRoles.js     Lectura de roles desde el token
   src/components/           Navbar responsive, Footer, RequireAuth
@@ -139,7 +145,8 @@ npm run build    # genera dist/ para Vercel
 ```
 
 En Vercel, el *Root Directory* del proyecto es `web-react` con el preset **Vite**.
-Antes de probar el login hay que registrar la URL en Auth0: ver [`AUTH0.md`](AUTH0.md).
+La única variable es `VITE_API_URL` (la URL de API Gateway). Registro y login pasan
+por la API: ver [`COGNITO.md`](COGNITO.md).
 
 ### Aplicación Android
 
@@ -155,9 +162,8 @@ Del caso §5.1:
 - Alcance **MVP académico**: no es un producto en producción.
 - **Cero datos personales reales.** Todo el `seed_data.sql`, las capturas y los mockups
   usan identificadores sintéticos (`PART-LF-001`, "Vecino Participante A").
-- **Sin credenciales productivas** ni accesos a los sistemas del socio formador. El
-  `Client Secret` de Auth0 nunca va en el frontend; `domain` y `clientId` son públicos
-  de una SPA.
+- **Sin credenciales productivas** ni accesos a los sistemas del socio formador.  El
+  frontend no contiene secretos ni datos de Cognito: solo la URL de la API.
 - Cámara y GPS **simulados** en las demostraciones, sin almacenar imágenes ni
   identificar a personas reales.
 - Compatibilidad desde **Android 8.0 (API 26)** y áreas táctiles de **48×48 dp**.

@@ -1,33 +1,121 @@
-# Demostración SyncPass: JAR en EC2 y Postman
+# Despliegue en EC2 con JDK y demostración
 
-La arquitectura de la entrega es: React en Vercel → API Gateway → JAR Spring Boot en EC2 → PostgreSQL de Supabase. Cognito registra/inicia sesión y entrega el token de acceso; la API valida ese token. Vercel no ejecuta el JAR.
-
-## Preparación una sola vez
-
-1. Crear el proyecto gratuito en Supabase y copiar **Connect → Session pooler**. Usar el host, puerto, usuario y contraseña indicados por ese panel. Crear el esquema `syncpass` una vez. La URL Java debe ser `jdbc:postgresql://HOST:PUERTO/postgres?sslmode=require&currentSchema=syncpass`. No copiar la contraseña al repositorio.
-2. En Cognito, agregar `https://oauth.pstmn.io/v1/callback` entre los callback URLs del cliente SPA público existente. Mantener habilitado Authorization code grant con PKCE. El registro se prueba con los requests 00A y 00B de Postman usando un usuario de prueba nuevo y su código de correo; el inicio de sesión se prueba con OAuth 2.0/PKCE desde la autorización de la colección.
-3. Volver a iniciar el laboratorio AWS Academy. Comprobar el estado de EC2 `i-01d851d6163897cb1` en `us-east-1` y arrancarla si está detenida. Anotar la **IPv4 pública actual**: puede cambiar después de un stop/start.
-4. Si cambió la IP, actualizar la integración de API Gateway para que apunte al nuevo origen EC2 y actualizar `API_DOMAIN=api.IP-CON-GUIONES.nip.io`. Comprobar que el grupo de seguridad permita HTTP 80 y HTTPS 443. La instancia usa HTTPS en Caddy; no exponer el puerto 8080 directamente.
-
-## Ejecutar el JAR en EC2
-
-Copiar el proyecto a `/opt/syncpass` en EC2. En ese servidor, copiar `deploy/ec2-supabase.env.example` a `/opt/syncpass/.env` y reemplazar los marcadores con los valores del proyecto Supabase y la URL real de Vercel. Mantener el archivo privado: `chmod 600 /opt/syncpass/.env`.
-
-Desde `/opt/syncpass` ejecutar:
-
-```bash
-docker compose --env-file .env -f deploy/compose.ec2.supabase.yaml up -d --build
-docker compose --env-file .env -f deploy/compose.ec2.supabase.yaml ps
-docker compose --env-file .env -f deploy/compose.ec2.supabase.yaml logs --tail=100 api
-curl -fsS https://API.DOMINIO/actuator/health
+```text
+React (Vercel) ──HTTPS──► API Gateway ──HTTPS──► Caddy :443 ──► JAR Spring Boot :8080 (EC2)
+                                                                    ├──► Amazon Cognito
+                                                                    └──► Supabase PostgreSQL
 ```
 
-El `Dockerfile` compila `backend/target/syncpass-api-1.0.0.jar` dentro de la imagen y lo ejecuta con `java -jar app.jar`. Flyway crea `talleres` y `registros` en el esquema `syncpass` de Supabase al primer arranque. El contenedor API debe aparecer **healthy** y el endpoint debe devolver `{"status":"UP"}`. Si el profesor pide el archivo JAR, se puede extraer de la imagen compilada; el requisito de ejecución queda demostrado por los logs y la respuesta de salud.
+Vercel solo sirve el frontend; el JAR corre en EC2 con **Amazon Corretto 21 (JDK)** como
+servicio `systemd`, sin Docker.
 
-## Demostración en Postman
+| Recurso | Valor |
+| --- | --- |
+| Instancia EC2 | `i-01d851d6163897cb1` (`us-east-1`) |
+| API Gateway | `https://hluamat8vg.execute-api.us-east-1.amazonaws.com` |
+| Frontend | `https://web-react-nu-nine.vercel.app` |
 
-Importar [SyncPass-EC2.postman_collection.json](postman/SyncPass-EC2.postman_collection.json). Ajustar `base_url` si cambió la URL pública de API Gateway. Para registrar una cuenta de prueba, definir `nuevo_usuario`, `nuevo_correo`, `nuevo_apodo`, `nueva_clave` y `codigo_verificacion` como variables locales de Postman; ejecutar 00A, copiar el código recibido por correo y ejecutar 00B. En Authorization de la colección, usar **Get New Access Token** y **Use Token**. Debe abrirse el login de Cognito con PKCE. No guardar contraseñas, códigos ni tokens en el repositorio.
+## 1. Antes de empezar
 
-Ejecutar los requests 01–06 en orden: salud del JAR, lectura pública de talleres desde Supabase, rechazo 401 sin token, perfil/roles autenticados, creación de taller como administrador y lectura del taller persistido. La creación requiere el usuario del grupo `admin` o `coordinador`. Un usuario recién registrado sin grupo puede iniciar sesión, pero no crear talleres hasta que se le asigne un rol.
+1. Iniciar el laboratorio de AWS Academy y arrancar la instancia si está detenida.
+2. Anotar la **IPv4 pública**: cambia después de cada stop/start.
+3. El grupo de seguridad debe permitir **80** y **443** (el 8080 no se abre).
+4. En Cognito, el cliente de la app debe tener `ALLOW_USER_PASSWORD_AUTH`
+   (ver [`COGNITO.md`](COGNITO.md)).
 
-La colección demuestra registro mediante la API de Cognito, login con Cognito y uso del token contra la API Java. `/api` no implementa un endpoint propio de registro. Para ahorrar el crédito del laboratorio, detener EC2 al acabar la demostración; mientras esté detenida, API Gateway devolverá error y la parte dinámica de Vercel no responderá.
+## 2. Instalar o actualizar la API
+
+Conectarse a la instancia (EC2 Instance Connect o Session Manager) y ejecutar:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/ethan1213/Prueba_FullStack2/main/deploy/ec2-jdk-setup.sh
+sudo bash ec2-jdk-setup.sh main
+```
+
+El script [`deploy/ec2-jdk-setup.sh`](../deploy/ec2-jdk-setup.sh) es idempotente:
+
+1. Instala `java-21-amazon-corretto-devel`, Maven y git.
+2. Clona o actualiza el repositorio en `/opt/syncpass/source` y compila
+   `syncpass-api-1.0.0.jar`.
+3. Crea `/etc/syncpass/syncpass.env`. Si existía un `.env` de Supabase del despliegue
+   anterior con Docker, lo reutiliza; si no, deja la plantilla y se detiene para que
+   la completes.
+4. Registra el servicio `syncpass-api` y lo deja escuchando solo en `127.0.0.1:8080`.
+5. Detiene los contenedores antiguos `syncpass-api` y `syncpass-caddy`, instala Caddy
+   nativo y publica `https://api.<IP-con-guiones>.nip.io`.
+6. Espera a que `/actuator/health` responda `UP` e imprime el dominio.
+
+### Variables de `/etc/syncpass/syncpass.env`
+
+```ini
+DATABASE_URL=jdbc:postgresql://<pooler>.supabase.com:5432/postgres?sslmode=require&currentSchema=syncpass
+DATABASE_USER=postgres.<project-ref>
+DATABASE_PASSWORD=<clave de Supabase>
+COGNITO_ISSUER=https://cognito-idp.us-east-1.amazonaws.com/us-east-1_2C9bbmKGd
+COGNITO_CLIENT_ID=677bhbj1qg892bmlk2pr1h6had
+CORS_ORIGINS=http://localhost:3000,https://web-react-nu-nine.vercel.app
+```
+
+El archivo queda con permisos `640` (root:syncpass). **Nunca se sube al repositorio.**
+
+### Si cambió la IP pública
+
+Actualizar la integración de API Gateway para que apunte al nuevo
+`https://api.<IP-con-guiones>.nip.io` (lo imprime el script al terminar).
+
+### Comandos útiles
+
+```bash
+systemctl status syncpass-api           # estado del JAR
+journalctl -u syncpass-api -n 100 -f    # logs de Spring Boot
+java -version                           # JDK instalado
+sudo systemctl restart syncpass-api     # reiniciar tras cambiar el .env
+```
+
+## 3. Vercel
+
+En **Settings → Environment Variables** solo hace falta:
+
+| Variable | Valor |
+| --- | --- |
+| `VITE_API_URL` | `https://hluamat8vg.execute-api.us-east-1.amazonaws.com` |
+
+Las antiguas `VITE_COGNITO_*` ya no se usan y se pueden borrar. Tras cambiarlas,
+volver a desplegar.
+
+## 4. Demostración en el navegador
+
+1. Abrir `https://web-react-nu-nine.vercel.app/registro` con las **DevTools → Red** abiertas.
+2. Completar usuario, correo, apodo y contraseña, y pulsar **Crear cuenta**.
+3. Ingresar el código que llega al correo y pulsar **Confirmar e ingresar**.
+4. Se muestra **Sesión iniciada correctamente** con el correo del usuario.
+
+En la pestaña Red solo aparecen peticiones a `execute-api.us-east-1.amazonaws.com`
+(`/api/auth/register`, `/api/auth/confirm`, `/api/auth/login`). **Ninguna va a
+`cognito`**: la API en EC2 es la que se comunica con Cognito.
+
+## 5. Demostración en Postman
+
+Importar [`SyncPass-EC2.postman_collection.json`](postman/SyncPass-EC2.postman_collection.json)
+y definir como variables locales `nuevo_usuario`, `nuevo_correo`, `nuevo_apodo`,
+`nueva_clave` y `codigo_verificacion`.
+
+| Request | Qué demuestra | Esperado |
+| --- | --- | --- |
+| 00A Registrar usuario | La API crea la cuenta en Cognito | `201` |
+| 00B Confirmar código | La API confirma el correo | `204` |
+| 00C Iniciar sesión | La API obtiene los tokens y los guarda en la colección | `200` |
+| 00D Renovar token | Refresh a través de la API | `200` |
+| 01 Salud del JAR | Spring Boot corriendo en EC2 | `200` `UP` |
+| 02 Talleres públicos | Lectura desde Supabase | `200` |
+| 03 Ruta protegida sin token | La API exige token | `401` |
+| 04 Mi perfil | El token de Cognito es aceptado | `200` |
+| 05 Crear taller | Escritura en Supabase (requiere grupo `admin` o `coordinador`) | `201` |
+| 06 Leer taller creado | El dato quedó persistido | `200` |
+
+No guardar contraseñas, códigos ni tokens en el repositorio.
+
+## 6. Al terminar
+
+Detener la instancia para ahorrar crédito del laboratorio. Mientras esté detenida,
+API Gateway responde error y la parte dinámica de Vercel no funciona.

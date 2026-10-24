@@ -36,7 +36,7 @@ papel**. Eso produce:
 
 ## Qué hay en el repositorio
 
-Tres entregables que **conviven**, ninguno reemplaza al otro:
+Cuatro piezas que **conviven**; ninguna reemplaza a otra:
 
 ### 1. Sitio estático EP1 — raíz del repositorio
 
@@ -48,8 +48,9 @@ Se abre directo con el navegador, sin instalar nada.
 
 ### 2. Aplicación web React — `web-react/`
 
-La app del caso SyncPass. React + Vite, rutas con **wouter**, autenticación y roles con
-**Amazon Cognito**, desplegada en **Vercel**.
+La app del caso SyncPass: React + Vite con rutas en **wouter**, desplegada en **Vercel**.
+La web **solo habla con la API**: registro, confirmación de correo e inicio de sesión
+son endpoints del backend, que es quien se comunica con Amazon Cognito.
 
 ```bash
 cd web-react
@@ -61,7 +62,26 @@ Rutas: `/` talleres · `/taller/:id` detalle y quórum · `/acreditar` escáner 
 `/encuesta` satisfacción · `/sincronizacion` batch sync · `/panel` quórum y reportes ·
 `/login` · `/registro` · `/ep1` módulo histórico de la EP1.
 
-### 3. Aplicación Android — `mobile-kotlin/`
+### 3. API Java — `backend/`
+
+Spring Boot 3.5 con Java 21. Corre en **EC2** con Amazon Corretto (JDK) como servicio
+`systemd`, persiste en **Supabase PostgreSQL** y se publica mediante **API Gateway**.
+
+```text
+React (Vercel) ─► API Gateway ─► JAR en EC2 ─┬─► Amazon Cognito (registro, login, tokens)
+                                             └─► Supabase PostgreSQL (talleres, registros)
+```
+
+```bash
+cd backend
+mvn test        # pruebas de la API y de autenticación
+mvn package     # target/syncpass-api-1.0.0.jar
+```
+
+Despliegue y demostración: [`docs/DEMO_EC2_JAR_POSTMAN.md`](docs/DEMO_EC2_JAR_POSTMAN.md) ·
+endpoints de autenticación: [`docs/COGNITO.md`](docs/COGNITO.md).
+
+### 4. Aplicación Android — `mobile-kotlin/`
 
 Kotlin + Jetpack Compose + Material 3, con layouts adaptativos para teléfono y tablet y
 modo claro/oscuro. Ver [`mobile-kotlin/README.md`](mobile-kotlin/README.md).
@@ -97,7 +117,8 @@ Los wireframes en texto están en [`docs/MOCKUPS.md`](docs/MOCKUPS.md).
 
 | Para | Documento |
 | --- | --- |
-| Autenticación y roles con Auth0 | [`docs/AUTH0.md`](docs/AUTH0.md) |
+| Registro y login vía API con Cognito | [`docs/COGNITO.md`](docs/COGNITO.md) |
+| Despliegue en EC2 con JDK y demo Postman | [`docs/DEMO_EC2_JAR_POSTMAN.md`](docs/DEMO_EC2_JAR_POSTMAN.md) |
 | Responsive, modo oscuro y accesibilidad | [`docs/RESPONSIVE.md`](docs/RESPONSIVE.md) |
 | Arquitectura y contrato de la API | [`docs/ARQUITECTURA_FULLSTACK_MOBILE.md`](docs/ARQUITECTURA_FULLSTACK_MOBILE.md) |
 | Repos y material del docente | [`docs/REFERENCIAS_CURSO.md`](docs/REFERENCIAS_CURSO.md) |

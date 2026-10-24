@@ -41,9 +41,6 @@ services:
       context: ./web-react
       args:
         VITE_API_URL: ${VITE_API_URL:-}
-        VITE_COGNITO_ISSUER: ${COGNITO_ISSUER}
-        VITE_COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
-        VITE_COGNITO_DOMAIN: ${COGNITO_DOMAIN}
     ports:
       - "127.0.0.1:3000:80"
     depends_on:

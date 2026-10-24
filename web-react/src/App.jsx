@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import ScannerPage from './pages/ScannerPage';
 import SyncPage from './pages/SyncPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import TallerDetailPage from './pages/TallerDetailPage';
 import PanelQuorumPage from './pages/PanelQuorumPage';
 import LegacyEyjModule from './pages/legacy/LegacyEyjModule';
@@ -52,7 +53,7 @@ export default function App(){
  }
  const protect=(children,roles)=> <RequireAuth roles={roles}>{children}</RequireAuth>;
  return <div className="layout-app"><a className="salto-contenido" href="#contenido">Saltar al contenido principal</a><Navbar offlineCount={unsyncedItems.length} isOfflineMode={isOfflineMode}/>
- <div id="contenido" className="layout-cuerpo">{error&&!['/login','/registro','/auth/callback'].includes(window.location.pathname)&&<p className="contenedor alert alert-warning" role="status">{error}</p>}
+ <div id="contenido" className="layout-cuerpo">{error&&!['/login','/registro'].includes(window.location.pathname)&&<p className="contenedor alert alert-warning" role="status">{error}</p>}
  {isLoading?<p className="contenedor">Verificando sesión…</p>:<Switch>
  <Route path="/"><HomePage talleres={talleres} onSelectTaller={t=>navigate('/taller/'+t.id)}/></Route>
  <Route path="/taller/:id">{params=><TallerDetailPage taller={talleres.find(t=>String(t.id)===params.id)}/>}</Route>
@@ -64,7 +65,7 @@ export default function App(){
  <Route path="/borradores">{protect(<DraftsPage talleres={talleres} onQueue={queue}/>)}</Route>
  <Route path="/sincronizacion">{protect(<SyncPage unsyncedItems={unsyncedItems} isOfflineMode={isOfflineMode} onPerformSync={sync}/>)}</Route>
  <Route path="/panel">{protect(<PanelQuorumPage talleres={talleres}/>,staff)}</Route>
- <Route path="/login"><LoginPage/></Route><Route path="/registro"><LoginPage/></Route><Route path="/auth/callback"><LoginPage/></Route>
+ <Route path="/login"><LoginPage/></Route><Route path="/registro"><RegisterPage/></Route>
  <Route path="/ep1" component={LegacyEyjModule}/>
  <Route><div className="contenedor estado-bloque"><h1>Página no encontrada</h1><Link href="/">Volver al inicio</Link></div></Route>
  </Switch>}</div><Footer/></div>;
