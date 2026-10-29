@@ -10,7 +10,7 @@
     /* Los dibujos se generan con tools/generar_mockups.py y
        tools/generar_diagramas_bd.py. Esta página solo los muestra. */
     .mockup-toolbar {
-      background: #1b2b52; color: #fff; padding: 16px 24px; margin-bottom: 20px;
+      background: #315447; color: #fff; padding: 16px 24px; margin-bottom: 20px;
       border-radius: 8px; display: flex; flex-wrap: wrap; align-items: center;
       justify-content: space-between; gap: 16px;
     }
@@ -61,14 +61,14 @@
 <body>
   <header>
     <div class="contenedor cabecera">
-      <a class="marca" href="index.html">
-        <span style="color: #2452c9; font-size: 24px; font-weight: 900;">SyncPass</span>
+      <a class="marca" href="https://web-react-nu-nine.vercel.app/">
+        <span style="color: #315447; font-size: 24px; font-weight: 900;">SyncPass</span>
         <span style="font-size: 13px; color: #64748b; font-weight: normal;">| CITT Plaza Vespucio</span>
       </a>
       <nav aria-label="Navegación principal">
-        <a href="index.html">Sitio Web</a>
+        <a href="https://web-react-nu-nine.vercel.app/">Aplicación Web</a>
         <a href="mockups.html" aria-current="page">Mockups &amp; BD</a>
-        <a href="login.html">Login</a>
+        <a href="https://web-react-nu-nine.vercel.app/login">Login</a>
       </nav>
     </div>
   </header>
@@ -127,14 +127,14 @@
     var VISTAS = {
       panel: { grupo: 'vistas', tab: '1. Panel de talleres', doc: 'docs/MOCKUPS.md',
         texto: 'Listado de actividades en terreno con su quórum. Es la entrada al resto del sistema.' },
-      login: { grupo: 'vistas', tab: '2. Login (Cognito)', doc: 'docs/COGNITO.md',
-        texto: 'El formulario de credenciales lo aloja el user pool de Cognito: SyncPass solo recibe el token con el grupo.' },
+      login: { grupo: 'vistas', tab: '2. Login', doc: 'docs/COGNITO.md',
+        texto: 'La web envía las credenciales a la API en EC2; la API autentica en Cognito y devuelve la sesión con el grupo.' },
       escaner: { grupo: 'vistas', tab: '3. Escáner QR', doc: 'docs/MOCKUPS.md',
         texto: 'Reemplazo de la planilla de papel. Objetivo del caso: menos de 5 segundos por persona.' },
       encuesta: { grupo: 'vistas', tab: '4. Encuesta 1-5', doc: 'docs/MOCKUPS.md',
         texto: 'Se responde en el recinto al cerrar el taller, no por correo días después.' },
       quorum: { grupo: 'vistas', tab: '5. Quórum en vivo', doc: 'docs/MOCKUPS.md',
-        texto: 'Marcaciones con hora, validación por GPS y estado de sincronización de cada fila.' },
+        texto: 'Marcaciones con hora y estado de sincronización. La validación GPS queda para la tercera evaluación.' },
       sync: { grupo: 'vistas', tab: '6. Sincronización', doc: 'docs/RESPONSIVE.md',
         texto: 'Offline-first: primero se guarda local (is_synced = 0) y después se envía por lote.' },
 
@@ -149,10 +149,13 @@
       'rol-participante': { grupo: 'roles', tab: 'Participante', doc: 'docs/COGNITO.md',
         texto: 'Beneficiario comunitario: su código QR, sus talleres y sus encuestas pendientes.' },
 
+      'crud-proyectos': { grupo: 'datos', tab: 'CRUD API · Proyectos', bd: 'img/mockups/crud-proyectos-web.svg',
+        doc: 'docs/DEMO_EC2_JAR_POSTMAN.md',
+        texto: 'Primer mantenedor: crear, listar, editar y eliminar proyectos comunitarios con sesión de coordinador o administrador.' },
       'crud-talleres': { grupo: 'datos', tab: 'CRUD API · Talleres', formatos: ['web', 'tablet'],
-        doc: 'docs/API_EC2.md',
+        doc: 'docs/DEMO_EC2_JAR_POSTMAN.md',
         texto: 'Alta, lectura, edición y baja de talleres contra la API REST desplegada en EC2.' },
-      'crud-local': { grupo: 'datos', tab: 'CRUD local · Borradores', doc: 'docs/API_EC2.md',
+      'crud-local': { grupo: 'datos', tab: 'CRUD local · Borradores', doc: 'docs/ARQUITECTURA_FULLSTACK_MOBILE.md',
         texto: 'Las mismas cuatro operaciones sobre la base del dispositivo, sin conexión.' },
       relacional: { grupo: 'datos', tab: 'BD · Relacional', bd: 'img/dibujo-modelo-relacional.svg',
         doc: 'docs/MODELO_BASE_DATOS.md',
@@ -164,10 +167,10 @@
         doc: 'docs/MODELO_ESTRELLA_COPO_NIEVE.md',
         texto: 'Las mismas dimensiones, divididas en sus jerarquías: territorio, tiempo y área temática.' },
       local: { grupo: 'datos', tab: 'BD · Base local', bd: 'img/dibujo-base-local.svg',
-        doc: 'docs/API_EC2.md',
+        doc: 'docs/ARQUITECTURA_FULLSTACK_MOBILE.md',
         texto: 'Room/SQLite e IndexedDB: las tablas del dispositivo y la cola de sincronización.' },
       ec2: { grupo: 'datos', tab: 'Despliegue en EC2', bd: 'img/dibujo-despliegue-ec2.svg',
-        doc: 'docs/API_EC2.md',
+        doc: 'docs/DEMO_EC2_JAR_POSTMAN.md',
         texto: 'Clientes, Cognito, la instancia EC2 con la API y la base de datos dentro de la VPC.' }
     };
     var NOTA_MODO = {

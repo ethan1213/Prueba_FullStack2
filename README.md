@@ -1,159 +1,66 @@
-# SyncPass — Acreditación QR y Vinculación Comunitaria
+# SyncPass
 
-Proyecto del caso oficial **SyncPass** · Duoc UC · Escuela de Informática y
-Telecomunicaciones · CITT Plaza Vespucio.
-Socio formador: TI CONSULTING DIEGO GARCÉS MIRANDA E.I.R.L. (Ticdgm).
+Aplicación académica de acreditación de talleres comunitarios para Duoc UC, CITT Plaza Vespucio. Sustituye las planillas de papel por un catálogo de talleres, registro de asistencia, encuestas breves y una cola local que se sincroniza al recuperar la conexión.
 
-| | |
-| --- | --- |
-| **Asignaturas** | DSY1105 (Desarrollo de Aplicaciones Móviles) · DSY1104 (Full Stack II) |
-| **Caso** | [`docs/CASO.md`](docs/CASO.md) · PDF original disponible en AVA |
-| **Documentación** | [`docs/README.md`](docs/README.md) |
+## Demostración del viernes 30 de octubre
 
----
+1. Presentar el problema y abrir [`mockups.html`](mockups.html) **antes** de la aplicación. Mostrar la vista web, el móvil y los dos mantenedores.
+2. Abrir la [web en Vercel](https://web-react-nu-nine.vercel.app/) e iniciar sesión.
+3. Mostrar **Proyectos comunitarios** y **Talleres**: crear, listar, editar y eliminar. Ambos consumen la API Java en EC2 y requieren el grupo `admin` o `coordinador` de Cognito.
+4. Mostrar el CRUD **local** de borradores de encuestas en IndexedDB, sin conexión.
+5. Abrir la aplicación Android Kotlin y mostrar catálogo, login, escáner y cola local. La prueba de QR y GPS de punta a punta corresponde a la tercera evaluación.
 
-## El problema
+Guion y comprobaciones: [`docs/DEMO_VIERNES_30.md`](docs/DEMO_VIERNES_30.md).
 
-La asistencia a los talleres de vinculación comunitaria se registra **en planillas de
-papel**. Eso produce:
+## Arquitectura implementada
 
-- Pérdida y deterioro de evidencia, y registros ilegibles.
-- Filas de **15 a 20 minutos** en el acceso a cada actividad.
-- Encuestas de satisfacción enviadas días después, con **menos del 15%** de respuesta.
-- Nula operación en unidades vecinales **sin cobertura móvil**.
+```text
+Web React (Vercel) ──HTTPS──► API Gateway ──HTTPS──► Caddy + JAR Spring Boot (EC2)
+       │                                                 ├──► Cognito (usuarios y grupos)
+       └──► IndexedDB (borradores y cola local)           └──► Supabase PostgreSQL
 
-## La solución
+Android Kotlin ──HTTPS──► API Gateway (catálogo y sincronización)
+       ├──► Cognito (login OAuth con PKCE)
+       └──► Room / SQLite (catálogo y pendientes locales)
+```
 
-| Objetivo del caso | Cómo lo resuelve SyncPass |
-| --- | --- |
-| Acreditar en menos de 5 segundos (hoy: 45 s) | Lectura de código QR con la cámara |
-| Operar sin señal al 100% | Room/SQLite local con bandera `is_synced` y batch sync |
-| Subir la respuesta de encuestas sobre el 65% | Encuesta de 1 a 5 estrellas aplicada en terreno |
-| Eliminar el papel al 100% | Registro digital con marca de tiempo; georreferencia pendiente |
-| Bajar 80% las horas de digitación | Reportes automáticos de quórum e impacto |
+La URL de API Gateway permanece estable; la IP pública de EC2 puede cambiar al reiniciar el laboratorio. [`deploy/fix-ip.sh`](deploy/fix-ip.sh) ayuda a reapuntar la integración.
 
----
+## Tecnologías y estructura
 
-## Qué hay en el repositorio
+| Pieza | Tecnología real | Carpeta |
+| --- | --- | --- |
+| Web | React 18, Vite 6, JSX, Wouter, CSS propio, IndexedDB | `web-react/src/` |
+| API | Java 21, Spring Boot 3.5, JPA, Flyway, Maven | `backend/` |
+| Móvil | Kotlin, Jetpack Compose, Retrofit, Room, CameraX, ML Kit | `mobile-kotlin/` |
+| Datos | PostgreSQL en Supabase y SQLite local | `backend/src/main/resources/db/migration/`, `mobile-kotlin/` |
+| Mockups | SVG y visor HTML | `img/mockups/`, `mockups.html` |
 
-Cuatro piezas que **conviven**; ninguna reemplaza a otra:
+`web-react/src/components/` contiene piezas compartidas; `web-react/src/pages/` contiene las pantallas; `web-react/src/index.css` define colores, diseño adaptable y estados. El proyecto actual **no utiliza Tailwind ni TypeScript**. Tailwind es un sistema de clases utilitarias para componer estilos; se explica como tecnología del curso, no como una implementación propia. Los archivos `.jsx` son los componentes reales; no hay pantallas `.tsx` que mostrar.
 
-### 1. Sitio estático EP1 — raíz del repositorio
-
-El frontend evaluado en la EP1: `index.html`, `login.html`, `register.html`, con
-`css/estilos.css` (Bulma local) y `js/validaciones.js`. Se mantiene **tal cual**, con
-puntos de corte añadidos para tablet y teléfono angosto.
-
-Se abre directo con el navegador, sin instalar nada.
-
-### 2. Aplicación web React — `web-react/`
-
-La app del caso SyncPass: React + Vite con rutas en **wouter**, desplegada en **Vercel**.
-La web **solo habla con la API**: registro, confirmación de correo e inicio de sesión
-son endpoints del backend, que es quien se comunica con Amazon Cognito.
+## Ejecución local
 
 ```bash
 cd web-react
 npm install
-npm run dev     # http://localhost:3000
+npm run dev
 ```
 
-Rutas: `/` talleres · `/taller/:id` detalle y quórum · `/acreditar` escáner QR ·
-`/encuesta` satisfacción · `/sincronizacion` batch sync · `/panel` quórum y reportes ·
-`/login` · `/registro` · `/ep1` módulo histórico de la EP1.
-
-### 3. API Java — `backend/`
-
-Spring Boot 3.5 con Java 21. Corre en **EC2** con Amazon Corretto (JDK) como servicio
-`systemd`, persiste en **Supabase PostgreSQL** y se publica mediante **API Gateway**.
-
-```text
-React (Vercel) ─► API Gateway ─► JAR en EC2 ─┬─► Amazon Cognito (registro, login, tokens)
-                                             └─► Supabase PostgreSQL (talleres, registros)
-```
+La web requiere `VITE_API_URL`; ver [`web-react/.env.example`](web-react/.env.example). Para probar la API:
 
 ```bash
 cd backend
-mvn test        # pruebas de la API y de autenticación
-mvn package     # target/syncpass-api-1.0.0.jar
+./mvnw test
+./mvnw package
 ```
 
-Despliegue y demostración: [`docs/DEMO_EC2_JAR_POSTMAN.md`](docs/DEMO_EC2_JAR_POSTMAN.md) ·
-endpoints de autenticación: [`docs/COGNITO.md`](docs/COGNITO.md).
+En Windows se usa `mvnw.cmd`. Las variables de base de datos y Cognito se configuran localmente según [`docs/DEMO_EC2_JAR_POSTMAN.md`](docs/DEMO_EC2_JAR_POSTMAN.md); no se guardan credenciales en Git. Para Android, abrir `mobile-kotlin/` en Android Studio y compilar `app-debug.apk`.
 
-### 4. Aplicación Android — `mobile-kotlin/`
+## Requisitos y pruebas
 
-Kotlin + Jetpack Compose + Material 3, con layouts adaptativos para teléfono y tablet y
-modo claro/oscuro. Ver [`mobile-kotlin/README.md`](mobile-kotlin/README.md).
+- Requisitos funcionales y no funcionales: [`docs/REQUISITOS_SYNCPASS.md`](docs/REQUISITOS_SYNCPASS.md).
+- Mockups y explicación de cada vista: [`docs/MOCKUPS.md`](docs/MOCKUPS.md).
+- Modelo relacional y copo de nieve: [`docs/MODELO_BASE_DATOS.md`](docs/MODELO_BASE_DATOS.md), [`docs/MODELO_ESTRELLA_COPO_NIEVE.md`](docs/MODELO_ESTRELLA_COPO_NIEVE.md).
+- Pruebas automatizadas de la API: `backend/src/test/`. La cobertura porcentual se informa solo desde un reporte generado; la meta de **Vitest 80%** es para la próxima evaluación y aún no está implementada.
 
----
-
-## Modelos de datos
-
-- **Relacional (OLTP):** [`docs/MODELO_BASE_DATOS.md`](docs/MODELO_BASE_DATOS.md) ·
-  [`database/schema.sql`](database/schema.sql) · [`database/seed_data.sql`](database/seed_data.sql)
-- **Multidimensional:** [`docs/MODELO_ESTRELLA_COPO_NIEVE.md`](docs/MODELO_ESTRELLA_COPO_NIEVE.md) ·
-  [`database/star_schema.sql`](database/star_schema.sql)
-- **Dibujos:** [`img/dibujo-modelo-estrella.svg`](img/dibujo-modelo-estrella.svg) ·
-  [`img/dibujo-modelo-copo-nieve.svg`](img/dibujo-modelo-copo-nieve.svg)
-
-## Mockups y modelo de BD
-
-**[`SyncPass-Mockups-y-BD.html`](SyncPass-Mockups-y-BD.html) — documento para entregar.**
-Un solo archivo, sin dependencias: se abre con doble clic desde cualquier carpeta, sin
-servidor ni internet. Reúne las 6 vistas (web y móvil), el modelo relacional completo con
-su diccionario de datos, y los diagramas de estrella y copo de nieve. También se imprime
-a PDF con `Ctrl+P`.
-
-[`mockups.html`](mockups.html) es el visor interactivo que alterna entre
-escritorio, tablet y móvil. Necesita estar dentro del repositorio, porque usa
-`css/estilos.css` y los SVG de `img/`.
-
-Los wireframes en texto están en [`docs/MOCKUPS.md`](docs/MOCKUPS.md).
-
----
-
-## Guías
-
-| Para | Documento |
-| --- | --- |
-| Registro y login vía API con Cognito | [`docs/COGNITO.md`](docs/COGNITO.md) |
-| Despliegue en EC2 con JDK y demo Postman | [`docs/DEMO_EC2_JAR_POSTMAN.md`](docs/DEMO_EC2_JAR_POSTMAN.md) |
-| Responsive, modo oscuro y accesibilidad | [`docs/RESPONSIVE.md`](docs/RESPONSIVE.md) |
-| Arquitectura y contrato de la API | [`docs/ARQUITECTURA_FULLSTACK_MOBILE.md`](docs/ARQUITECTURA_FULLSTACK_MOBILE.md) |
-| Repos y material del docente | [`docs/REFERENCIAS_CURSO.md`](docs/REFERENCIAS_CURSO.md) |
-
----
-
-## Clonar el proyecto
-
-```bash
-git clone https://github.com/ethan1213/Prueba_FullStack2.git
-```
-
-O con un clic: `clonar.bat` (Windows), `clonar.ps1` (PowerShell), `clonar.sh`
-(Linux/macOS). Si la carpeta ya existe, actualizan con `git pull`.
-
----
-
-## Privacidad
-
-Alcance **MVP académico**. Todos los datos de este repositorio son **ficticios o
-anonimizados**, según la restricción §5.1 del caso: no hay RUT, nombres, correos,
-teléfonos ni direcciones reales, y no se incluyen credenciales productivas ni accesos
-a los sistemas del socio formador.
-
-## Dibujos (mockups y modelos de datos)
-
-Los wireframes y los diagramas de base de datos son SVG generados por script,
-con el aspecto de un diagrama de draw.io:
-
-```bash
-python tools/generar_mockups.py        # img/mockups/*.svg  (6 vistas x web/tablet/movil)
-python tools/generar_diagramas_bd.py   # img/dibujo-modelo-{relacional,estrella,copo-nieve}.svg
-python tools/generar_documento.py      # incrusta todo en SyncPass-Mockups-y-BD.html
-```
-
-`tools/drawio.py` contiene las primitivas de dibujo (cajas, conectores con pata
-de cuervo, tablas de entidad, notas). Para cambiar un mockup se edita la función
-de esa vista y se vuelve a ejecutar el script.
+Proyecto académico con datos ficticios de demostración.

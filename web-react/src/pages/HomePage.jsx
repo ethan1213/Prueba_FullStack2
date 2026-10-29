@@ -1,26 +1,16 @@
 import React from 'react';
 import { Link } from 'wouter';
 
-/**
- * Inicio. Mantiene la estructura del sitio original de E&J Proyectos Web:
- * banner, panel de bienvenida, beneficios, tarjetas y video.
- */
 export default function HomePage({ talleres, onSelectTaller }) {
   return (
     <>
-      <div className="banner-home">
-        <img
-          src="/img/banner-home.png"
-          alt="E&J Proyectos Web: ideas que se convierten en proyectos digitales"
-        />
-      </div>
-
       <main className="contenedor">
         <section className="bienvenida" aria-labelledby="titulo-inicio">
-          <h1 id="titulo-inicio">Acreditación digital en terreno</h1>
+          <p className="eyebrow">CITT Plaza Vespucio · Vinculación con el medio</p>
+          <h1 id="titulo-inicio">En terreno.<br />Sin papel.</h1>
           <p>
-            SyncPass reemplaza las planillas de papel de los talleres comunitarios.
-            Aquí puedes ver las actividades en curso y su quórum.
+            SyncPass reúne talleres, acreditación y encuestas en un solo flujo.
+            Los registros se guardan en el dispositivo cuando falta señal y se envían después.
           </p>
           <Link className="btn btn-primary" href="#talleres">
             Ver talleres
@@ -111,14 +101,6 @@ export default function HomePage({ talleres, onSelectTaller }) {
           </div>
         </section>
 
-        <section className="video-section" aria-labelledby="titulo-video">
-          <h2 id="titulo-video">Conoce más sobre nosotros</h2>
-          <video className="video-player" controls preload="metadata" poster="/img/video-poster.jpg">
-            <source src="/video/presencia-digital.mp4" type="video/mp4" />
-            Tu navegador no soporta la reproducción de video. Puedes{' '}
-            <a href="/video/presencia-digital.mp4">descargar el video aquí</a>.
-          </video>
-        </section>
       </main>
     </>
   );

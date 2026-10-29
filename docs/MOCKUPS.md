@@ -29,7 +29,7 @@ y hay una lámina por vista y por formato:
 | Vista | Escritorio | Tablet | Móvil (Kotlin) |
 |---|---|---|---|
 | 1. Panel de talleres | `img/mockups/panel-web.svg` | `img/mockups/panel-tablet.svg` | `img/mockups/panel-movil.svg` |
-| 2. Inicio de sesión (Auth0) | `img/mockups/login-web.svg` | `img/mockups/login-tablet.svg` | `img/mockups/login-movil.svg` |
+| 2. Inicio de sesión (Cognito) | `img/mockups/login-web.svg` | `img/mockups/login-tablet.svg` | `img/mockups/login-movil.svg` |
 | 3. Acreditación por QR | `img/mockups/escaner-web.svg` | `img/mockups/escaner-tablet.svg` | `img/mockups/escaner-movil.svg` |
 | 4. Encuesta de satisfacción | `img/mockups/encuesta-web.svg` | `img/mockups/encuesta-tablet.svg` | `img/mockups/encuesta-movil.svg` |
 | 5. Quórum en vivo | `img/mockups/quorum-web.svg` | `img/mockups/quorum-tablet.svg` | `img/mockups/quorum-movil.svg` |
@@ -37,6 +37,13 @@ y hay una lámina por vista y por formato:
 
 Para verlos todos juntos: `mockups.html` en el navegador, o el documento
 `SyncPass-Mockups-y-BD.html`, que los lleva incrustados y se puede enviar solo.
+
+El visor incluye además el [mantenedor de proyectos](../img/mockups/crud-proyectos-web.svg),
+el de talleres, los borradores locales y las vistas por perfil. En la exposición,
+mostrar primero estos dibujos y después abrir la aplicación. El login web real
+envía credenciales a la API en EC2, que consulta Cognito; cualquier referencia
+antigua a Auth0 en dibujos previos se considera obsoleta. GPS y el recorrido QR
+entre dispositivos pertenecen a la tercera evaluación.
 <!-- /dibujos -->
 
 
@@ -104,11 +111,7 @@ Para verlos todos juntos: `mockups.html` en el navegador, o el documento
 
 ## Vista 2: Iniciar Sesión (Login Monitores y Docentes)
 
-> **Autenticación:** el formulario de credenciales lo aloja **Auth0** (Universal
-> Login). La pantalla de SyncPass solo presenta el acceso, el alta de cuenta y el
-> estado de la sesión con su rol. Los cuatro perfiles (`admin`, `coordinator`,
-> `volunteer`, `attendee`) llegan en el custom claim del token.
-> Ver [`AUTH0.md`](AUTH0.md).
+> **Autenticación implementada:** SyncPass presenta el formulario y envía las credenciales a la API, que usa Amazon Cognito. La sesión y el perfil determinan las rutas y acciones permitidas.
 
 ### 2.1 Boceto Mobile (Android Kotlin - Jetpack Compose)
 ```text

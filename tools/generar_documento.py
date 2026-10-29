@@ -35,6 +35,8 @@ ROLES = [
 CRUD = [
     ("crud-talleres", "CRUD por API: talleres",
      "Alta, lectura, edición y baja contra la API REST desplegada en EC2."),
+    ("crud-proyectos", "CRUD por API: proyectos comunitarios",
+     "Alta, lectura, edición y baja de proyectos contra la API REST desplegada en EC2."),
     ("crud-local", "CRUD local: borradores de encuesta",
      "Las mismas cuatro operaciones sobre la base del dispositivo, sin conexión."),
 ]
@@ -157,8 +159,8 @@ def secciones_nuevas():
         [(i + 1, nombre, texto, bloque_dibujo(slug))
          for i, (slug, nombre, texto) in enumerate(ROLES)])
     crud = seccion(
-        "crud", "Los dos CRUD de negocio",
-        "Uno contra la API desplegada en EC2 y otro contra la base del propio dispositivo.",
+        "crud", "Mantenedores y CRUD local",
+        "Dos mantenedores contra la API desplegada en EC2 y borradores en el dispositivo.",
         [(i + 1, nombre, texto, bloque_dibujo(slug))
          for i, (slug, nombre, texto) in enumerate(CRUD)])
     infra = seccion(
@@ -232,6 +234,10 @@ def inyectar(html):
                         "Acceso por roles con Amazon Cognito. El formulario de credenciales lo aloja "
                         "el user pool, no SyncPass.")
     html = html.replace("Auth0", "Cognito")
+    html = html.replace("--azul: #2452c9; --azul-osc: #1b2b52; --azul-cl: #eef2fd; --cian: #00aeef;",
+                        "--azul: #315740; --azul-osc: #20382b; --azul-cl: #edf1e8; --cian: #a76943;")
+    html = html.replace("Acceso por roles con Amazon Cognito. El formulario de credenciales lo aloja el user pool, no SyncPass.",
+                        "Acceso por roles con Amazon Cognito. El frontend envía las credenciales a la API y recibe la sesión; esta lámina representa el flujo conceptual.")
 
     if "/* ---- Dibujos" not in html:
         html = html.replace("</style>", CSS + "</style>", 1)

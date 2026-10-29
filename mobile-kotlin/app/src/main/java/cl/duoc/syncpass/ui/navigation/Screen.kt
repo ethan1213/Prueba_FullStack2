@@ -8,7 +8,7 @@ sealed class Screen(val route: String, val title: String) {
     /** Panel de talleres en terreno del dia. */
     object Home : Screen("home", "Talleres en terreno")
 
-    /** Acceso por roles con Auth0. Ver docs/AUTH0.md. */
+    /** Acceso por roles con Cognito a traves de la API. */
     object Login : Screen("login", "Iniciar sesión")
 
     /** Inscripcion en terreno de un participante sin registro previo. */

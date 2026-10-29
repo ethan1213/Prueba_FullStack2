@@ -7,6 +7,7 @@ import { ROLES, roleLabel } from '../config/auth.js';
 const ENLACES = [
   { href: '/', label: 'Inicio' },
   { href: '/mi-panel', label: 'Mi panel' },
+  { href: '/proyectos', label: 'Proyectos', roles: [ROLES.admin, ROLES.coordinator] },
   { href: '/talleres', label: 'Gestionar talleres', roles: [ROLES.admin, ROLES.coordinator] },
   { href: '/acreditar', label: 'Acreditación', roles: [ROLES.admin, ROLES.coordinator, ROLES.volunteer] },
   { href: '/mi-qr', label: 'Mi QR', roles: [ROLES.attendee] },
@@ -32,7 +33,7 @@ export default function Navbar({ offlineCount = 0, isOfflineMode }) {
     <header>
       <div className="contenedor cabecera">
         <Link href="/" className="marca">
-          <img src="/img/logo-header.svg" alt="E&J Proyectos Web" className="marca-logo logo-claro" />
+          <img src="/img/logo-header.svg" alt="SyncPass" className="marca-logo logo-claro" />
           <img src="/img/logo-header-dark.svg" alt="" aria-hidden="true" className="marca-logo logo-oscuro" />
           <span className="marca-producto">SyncPass</span>
         </Link>

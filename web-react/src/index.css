@@ -8,28 +8,27 @@
      3. Layout y accesibilidad
      4. Cabecera y navegacion (con menu hamburguesa)
      5. Componentes (hero, tarjetas, formularios, tablas, pills, alertas)
-     6. Modulo historico EP1
-     7. Capa responsive: movil -> tablet -> escritorio
+     6. Capa responsive: movil -> tablet -> escritorio
    ========================================================================== */
 
 /* ------------------------------------------------------------------ 1. Tokens */
 :root {
   color-scheme: light dark;
 
-  --primary: #2452c9;
-  --primary-hover: #1b3da3;
-  --primary-light: #eef2fd;
-  --secondary: #00aeef;
-  --dark: #1b2b52;
+  --primary: #315447;
+  --primary-hover: #233f34;
+  --primary-light: #e9eee5;
+  --secondary: #c77948;
+  --dark: #26332e;
 
-  --text: #334155;
-  --text-muted: #64748b;
+  --text: #35423a;
+  --text-muted: #647269;
 
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --bg-light: #f8fafc; /* alias retrocompatible */
-  --border: #e2e8f0;
+  --bg: #f6f3ea;
+  --surface: #fffdf8;
+  --surface-2: #eee9de;
+  --bg-light: #eee9de;
+  --border: #d6d6c9;
 
   --danger: #b42318;
   --success: #166534;
@@ -43,9 +42,9 @@
   --alerta-border: #fecaca;
   --alerta-text: #991b1b;
 
-  --info-bg: #eff6ff;
-  --info-border: #bfdbfe;
-  --info-text: #1e40af;
+  --info-bg: #eaf1eb;
+  --info-border: #bfd2c2;
+  --info-text: #254b37;
 
   --aviso-bg: #fffbeb;
   --aviso-border: #fde68a;
@@ -67,19 +66,19 @@
    variable. Se puede forzar con <html data-theme="light|dark">. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --primary: #6c92f5;
-    --primary-hover: #8aa9f8;
-    --primary-light: #1c2a4d;
-    --dark: #e8eefc;
+    --primary: #a9cfb6;
+    --primary-hover: #c9e2cd;
+    --primary-light: #1f392c;
+    --dark: #e2e9df;
 
     --text: #d6ddeb;
     --text-muted: #9aa7bd;
 
-    --bg: #0d1424;
-    --surface: #141d31;
-    --surface-2: #1a2440;
-    --bg-light: #1a2440;
-    --border: #2b3755;
+    --bg: #151d1a;
+    --surface: #202a23;
+    --surface-2: #2a362d;
+    --bg-light: #2a362d;
+    --border: #455348;
 
     --danger: #fca5a5;
     --success: #86efac;
@@ -111,17 +110,17 @@
 }
 
 :root[data-theme='dark'] {
-  --primary: #6c92f5;
-  --primary-hover: #8aa9f8;
-  --primary-light: #1c2a4d;
-  --dark: #e8eefc;
+  --primary: #a9cfb6;
+  --primary-hover: #c9e2cd;
+  --primary-light: #1f392c;
+  --dark: #e2e9df;
   --text: #d6ddeb;
   --text-muted: #9aa7bd;
-  --bg: #0d1424;
-  --surface: #141d31;
-  --surface-2: #1a2440;
-  --bg-light: #1a2440;
-  --border: #2b3755;
+  --bg: #151d1a;
+  --surface: #202a23;
+  --surface-2: #2a362d;
+  --bg-light: #2a362d;
+  --border: #455348;
   --danger: #fca5a5;
   --success: #86efac;
   --ok-bg: #0f2a1c;
@@ -130,9 +129,9 @@
   --alerta-bg: #2d1416;
   --alerta-border: #5c2326;
   --alerta-text: #fca5a5;
-  --info-bg: #11213e;
-  --info-border: #24406e;
-  --info-text: #a9c4fb;
+  --info-bg: #1f392c;
+  --info-border: #4f755c;
+  --info-text: #c9e2cd;
   --aviso-bg: #2d2309;
   --aviso-border: #5b4710;
   --aviso-text: #fcd34d;
@@ -468,14 +467,17 @@ header {
 }
 
 .bienvenida {
-  padding: clamp(32px, 5vw, 56px) clamp(24px, 4vw, 40px);
+  padding: clamp(40px, 6vw, 80px) clamp(28px, 6vw, 72px);
   margin: 30px 0 40px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary-light) 0%, var(--surface-2) 100%);
+  border-radius: 3px;
+  border-left: 8px solid var(--secondary);
+  background: linear-gradient(115deg, var(--primary-light) 0%, var(--surface-2) 100%);
 }
 
 .bienvenida h1 {
-  font-size: clamp(28px, 4.2vw, 34px);
+  font-family: Georgia, serif;
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 1.05;
   color: var(--dark);
 }
 
@@ -1149,28 +1151,7 @@ footer strong {
   color: var(--dark);
 }
 
-/* ------------------------------------------- 6. Modulo historico EP1 */
-.aviso-legacy {
-  background: var(--aviso-bg);
-  border-bottom: 1px solid var(--aviso-border);
-  color: var(--aviso-text);
-  font-size: 13px;
-  padding: 10px 0;
-}
-
-.aviso-legacy a {
-  color: inherit;
-  font-weight: 700;
-}
-
-.sub-nav {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding-top: 18px;
-}
-
-/* ------------------------------------------------- 7. Capa responsive */
+/* ------------------------------------------------- 6. Capa responsive */
 
 /* Escritorio amplio */
 @media (min-width: 1280px) {
@@ -1366,3 +1347,8 @@ footer strong {
 
 .crud-grid { display:grid;grid-template-columns: minmax(0,1fr) minmax(0,1fr);gap:24px; }
 @media(max-width:760px){.crud-grid{grid-template-columns:1fr}}
+.eyebrow { color:var(--primary);font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase; }
+.maintainer-heading { border-bottom:2px solid var(--border);margin-bottom:28px;padding-bottom:14px; }
+.maintainer-heading h1 { font-family:Georgia,serif;font-size:clamp(30px,4vw,44px);margin:.25em 0; }
+.maintainer-card { border-left:4px solid var(--secondary);margin-bottom:16px; }
+.maintainer-card h3 { margin:.2em 0; }
