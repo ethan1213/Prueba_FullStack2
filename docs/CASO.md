@@ -166,4 +166,4 @@ Registrar únicamente material necesario, depurado y autorizado para uso académ
 
 ---
 
-*Fuente: `docs/caso.pdf` (8 páginas) — Formato de caso DSY1105. Convertido a Markdown para mejor comprensión por IA y uso como contexto del proyecto SyncPass.*
+*Fuente: `docs/caso.pdf` (8 páginas) — Formato de caso DSY1105. Transcripción de consulta para el equipo SyncPass.*

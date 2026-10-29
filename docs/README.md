@@ -13,5 +13,6 @@ Esta carpeta documenta exclusivamente la solución SyncPass. El punto de entrada
 | [COGNITO.md](COGNITO.md) | Registro, login y grupos de acceso. |
 | [MODELO_BASE_DATOS.md](MODELO_BASE_DATOS.md) | Modelo transaccional. |
 | [MODELO_ESTRELLA_COPO_NIEVE.md](MODELO_ESTRELLA_COPO_NIEVE.md) | Modelos analíticos. |
+| [RAMAS.md](RAMAS.md) | Ramas para Ethan, Jorge y funcionalidades de SyncPass. |
 
 Los archivos de una etapa antigua de venta de proyectos no forman parte de la aplicación ni de la demostración actual.

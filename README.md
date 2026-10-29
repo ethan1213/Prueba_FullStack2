@@ -64,3 +64,5 @@ En Windows se usa `mvnw.cmd`. Las variables de base de datos y Cognito se config
 - Pruebas automatizadas de la API: `backend/src/test/`. La cobertura porcentual se informa solo desde un reporte generado; la meta de **Vitest 80%** es para la próxima evaluación y aún no está implementada.
 
 Proyecto académico con datos ficticios de demostración.
+
+Colaboración y ramas: [`docs/RAMAS.md`](docs/RAMAS.md).
